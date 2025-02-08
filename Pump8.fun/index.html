@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>pump8.fun</title>
+    <style>
+      body {
+        width: 400px;
+        padding: 20px;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+        margin: 0 auto;
+        display: flex;
+        justify-content: center;
+      }
+      a {
+        text-decoration: none;
+      }
+      .container {
+        width: 100%;
+        max-width: 400px;
+      }
+
+      h1 {
+        color: #1da1f2;
+        font-size: 24px;
+        margin-bottom: 20px;
+      }
+
+      .option-group {
+        margin-bottom: 20px;
+        padding: 15px;
+        border: 1px solid #e1e8ed;
+        border-radius: 8px;
+      }
+
+      .option-title {
+        font-weight: bold;
+        margin-bottom: 10px;
+        color: #14171a;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .option-item {
+        display: flex;
+        align-items: center;
+        margin: 10px 0;
+      }
+
+      .text-input {
+        flex: 1;
+        padding: 8px 12px;
+        border: 1px solid #e1e8ed;
+        border-radius: 4px;
+        font-size: 14px;
+        margin-left: 10px;
+      }
+
+      .text-input:focus {
+        outline: none;
+        border-color: #1da1f2;
+      }
+
+      .switch {
+        position: relative;
+        display: inline-block;
+        width: 40px;
+        height: 20px;
+      }
+
+      .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+
+      .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: 0.4s;
+      }
+
+      .slider:before {
+        position: absolute;
+        content: '';
+        height: 16px;
+        width: 16px;
+        left: 2px;
+        bottom: 2px;
+        background-color: white;
+        transition: 0.4s;
+      }
+
+      input:checked + .slider {
+        background-color: rgb(0, 186, 124);
+      }
+
+      input:checked + .slider:before {
+        transform: translateX(20px);
+      }
+
+      .slider.round {
+        border-radius: 20px;
+      }
+
+      .slider.round:before {
+        border-radius: 50%;
+      }
+
+      .save-button {
+        background-color: #1da1f2;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 20px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background-color 0.2s;
+      }
+
+      .save-button:hover {
+        background-color: #1991da;
+      }
+
+      .save-status {
+        margin-left: 10px;
+        color: #17bf63;
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+
+      .save-status.show {
+        opacity: 1;
+      }
+
+      .activation-group {
+        position: relative;
+        margin-bottom: 20px;
+        padding: 15px;
+        border: 1px solid #e1e8ed;
+        border-radius: 8px;
+        background-color: #f8f9fa;
+      }
+
+      .activation-input {
+        width: calc(100% - 20px);
+        padding: 10px;
+        margin: 10px 0;
+        border: 1px solid #e1e8ed;
+        border-radius: 4px;
+        font-size: 14px;
+        box-sizing: border-box;
+      }
+
+      .activate-button {
+        background-color: #17bf63;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+      }
+
+      .activate-button:hover {
+        background-color: #0fa957;
+      }
+      .activate-button > a {
+        color: white;
+      }
+      .activation-status {
+        margin-left: 10px;
+        font-size: 14px;
+        display: none;
+      }
+
+      .activation-status.error {
+        display: inline;
+        color: #dc3545;
+      }
+
+      .activation-status.success {
+        display: inline;
+        color: #28a745;
+      }
+
+      .tweet-list {
+        max-height: 400px;
+        overflow-y: auto;
+        margin-top: 10px;
+      }
+
+      .tweet-item {
+        display: flex;
+        align-items: center;
+        padding: 12px;
+        border: 1px solid #e1e8ed;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        justify-content: space-between;
+        background-color: #f8f9fa;
+      }
+
+      .tweet-content {
+        flex: 1;
+        margin-right: 15px;
+      }
+
+      .tweet-user {
+        font-weight: 500;
+        color: #14171a;
+        margin-bottom: 4px;
+      }
+
+      .tweet-text {
+        color: #657786;
+        font-size: 14px;
+        word-break: break-word;
+      }
+
+      .tweet-status {
+        padding: 4px 12px;
+        border-radius: 16px;
+        font-size: 12px;
+        font-weight: 500;
+      }
+
+      .tweet-status.deleted {
+        background: rgb(255, 149, 0);
+        color: white;
+      }
+
+      .tweet-status.active {
+        background: rgb(0, 186, 124);
+        color: white;
+      }
+
+      /* 自定义滚动条样式 */
+      .tweet-list::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      .tweet-list::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 4px;
+      }
+
+      .tweet-list::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 4px;
+      }
+
+      .tweet-list::-webkit-scrollbar-thumb:hover {
+        background: #555;
+      }
+
+      .sound-toggle {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .sound-label {
+        margin-left: 10px;
+        font-size: 14px;
+        color: #657786;
+      }
+
+      .tweet-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .delete-btn {
+        padding: 4px 12px;
+        border-radius: 16px;
+        font-size: 12px;
+        font-weight: 500;
+        background: rgb(244, 33, 46);
+        color: white;
+        border: none;
+        cursor: pointer;
+        display: none;
+      }
+
+      .delete-btn:hover {
+        background: rgb(220, 30, 41);
+      }
+
+      .tweet-status.active + .delete-btn {
+        display: block;
+      }
+    </style>
+
+    <script src="index.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <h1>欢迎使用推特PUMP8.fun 防Rug插件</h1>
+
+      <div class="activation-group">
+        <div class="option-title">激活码</div>
+        <input type="text" id="activationCode" placeholder="请输入激活码" class="activation-input" />
+        <button class="activate-button" id="activateButton">激活</button>
+
+        <button class="activate-button">
+          <a href="https://pump8.fun" target="_blank" rel="noopener noreferrer">获取激活码</a>
+        </button>
+        <span id="activationStatus" class="activation-status"></span>
+      </div>
+
+      <div class="option-group">
+        <div class="option-title">通用设置</div>
+
+        <div class="option-item">
+          <label class="switch">
+            <input type="checkbox" id="enableAutoQuery" />
+            <span class="slider round"></span>
+          </label>
+          <span class="sound-label">中文/英文</span>
+        </div>
+
+        <div class="option-item">
+          <label class="switch">
+            <input type="checkbox" id="enableAutoQuery" />
+            <span class="slider round"></span>
+          </label>
+          <span class="sound-label"> 自动查询改名、删推、发盘信息</span>
+        </div>
+
+        <div class="option-item">
+          <label class="switch">
+            <input type="checkbox" id="enableKOLFollowers" />
+            <span class="slider round"></span>
+          </label>
+          <span class="sound-label"> 显示KOL关注信息</span>
+        </div>
+
+        <div class="option-item">
+          <label>CA自动跳转</label>
+          <input type="text" id="contractPrefix" placeholder="例如: https://gmgn.ai/sol/token/" class="text-input" />
+        </div>
+      </div>
+
+      <div class="option-group">
+        <div class="option-title">扩展设置</div>
+        <div class="option-item">
+          <label class="switch">
+            <input type="checkbox" disabled id="showGmgnNameHistory" />
+            <span class="slider round"></span>
+          </label>
+          <span class="sound-label">集成到 gmgn 代币页面显示</span>
+        </div>
+      </div>
+
+      <div class="option-group">
+        <div class="option-title">推文提醒</div>
+        <div class="option-item">
+          <label class="switch">
+            <input type="checkbox" id="notificationSound" />
+            <span class="slider round"></span>
+          </label>
+          <span class="sound-label">开启提醒声音</span>
+        </div>
+
+        <div class="option-item">
+          <label class="switch">
+            <input type="checkbox" id="enableAutoQuery" />
+            <span class="slider round"></span>
+          </label>
+          <span class="sound-label">KOL回复别人提醒</span>
+        </div>
+
+        <div class="option-item">
+          <label class="switch">
+            <input type="checkbox" id="enableAutoQuery" />
+            <span class="slider round"></span>
+          </label>
+          <span class="sound-label">KOL删推提醒</span>
+        </div>
+      </div>
+
+      <button class="save-button" id="saveButton">保存设置</button>
+      <span class="save-status" id="saveStatus">✓ 已保存</span>
+    </div>
+  </body>
+</html>

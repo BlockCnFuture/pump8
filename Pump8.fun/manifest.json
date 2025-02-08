@@ -1,0 +1,49 @@
+{
+  "manifest_version": 3,
+  "name": "Pump8.fun",
+  "options_page": "index.html",
+  "permissions": ["storage", "notifications", "offscreen"],
+  "description": "根据5000W用户发币数据，告别RUG，以最安全的方式自动查询推特用户改名次数，推特用户pump发盘记录，推特pump推特删除记录，实时监控用户推特信息",
+  "action": {
+    "default_icon": {
+      "128": "icons/icon128.png",
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png"
+    }
+  },
+
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "css": ["styles.css"],
+      "js": ["content.js"],
+      "matches": [
+        "https://x.com/*",
+        "https://api.x.com/*",
+        "https://gmgn.ai/sol/token/*"
+      ],
+      "run_at": "document_start"
+    }
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self';"
+  },
+
+  "host_permissions": [
+    "https://x.com/*",
+    "https://api.x.com/*",
+    "https://gmgn.ai/sol/token/*"
+  ],
+  "update_url": "https://clients2.google.com/service/update2/crx",
+  "version": "1.0.1",
+  "web_accessible_resources": [
+    {
+      "matches": ["<all_urls>"],
+      "resources": ["notification.mp3"]
+    }
+  ]
+}
